@@ -6,7 +6,7 @@ This little helper scripts creates user enrollment invites and sends them via em
 
 - authentik: get a api token from a user with permissions to create user invites
 - listmonk: get a api token for sending mails
-- put the tokens in the `secret.ini` file (template: `secret.ini.ex`)
+- put the tokens in the `tokens.ini` file (template: `tokens.ini.ex`)
 
 ## create-invites.py
 

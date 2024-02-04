@@ -42,6 +42,7 @@ def create_invite(config, fixed_data={}):
 def main():
     config = configparser.ConfigParser()
     config.read('enroll.ini')
+    config.read('tokens.ini')
 
     for line in sys.stdin:
         line = line.rstrip()
