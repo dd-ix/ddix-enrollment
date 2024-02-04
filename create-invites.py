@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import configparser
+from datetime import datetime, timedelta
 import json
 import re
 import requests
@@ -15,14 +16,14 @@ def get_headers(config):
 def get_url(config, path):
     return urljoin(config['authentik']['BaseURL'], path)
 
-def create_invite(config, fixed_data={}):
+def create_invite(config, expire, fixed_data={}):
     '''
     Creates an enrollment invite using the Authentik API. The `fixed_data`
     parameter should contain `username`, `name` and email fields.
     '''
-    
+
     obj = {
-       "expires" : "2024-02-05T14:40:00.000Z",
+       "expires" : expire,
        "fixed_data" : fixed_data,
        "flow" : config['authentik']['InviteFlow'],
        "name" : f"enroll-{fixed_data['username']}",
@@ -45,6 +46,9 @@ def main():
     config.read('enroll.ini')
     config.read('tokens.ini')
 
+    expire = datetime.now() + timedelta(days=1+int(config['authentik']['ExpireDays']))
+    expire = expire.replace(hour=0, minute=0, second=0, microsecond=0).isoformat() + "Z"
+
     for line in sys.stdin:
         line = line.rstrip()
         m = re.match('^([^,]+),([^,]+),([^,]+)$', line)
@@ -54,9 +58,9 @@ def main():
                 "name": m.group(2),
                 "email": m.group(3),
             }
-            invite_token = create_invite(config, enroll_data)
+            invite_token = create_invite(config, expire, enroll_data)
             if invite_token:
-                print(f"{line},{invite_token}")
+                print(f"{line},{invite_token},{expire}")
         else:
             print(f"ignoring line: {line}", file=sys.stderr)
 

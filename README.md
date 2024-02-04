@@ -6,7 +6,7 @@ This little helper scripts creates user enrollment invites and sends them via em
 
 - authentik: get a api token from a user with permissions to create user invites
 - listmonk: get a api token for sending mails
-- put the tokens in the `tokens.ini` file (template: `tokens.ini.ex`)
+- put the credentials in the `tokens.ini` file (template: `tokens.ini.ex`)
 
 ## create-invites.py
 
@@ -20,4 +20,7 @@ The script prints the csv file with an additional invite uuid. The output is to 
 
 ## send-invites.py
 
-*TBD*
+This script send the invites via listmonk:
+
+- use the csv file from the first step (`username`, `full name`, `email`, `itoken`, `expire`)
+- `./send-invites.py < invites.csv`
