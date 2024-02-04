@@ -32,12 +32,13 @@ def create_invite(config, fixed_data={}):
         get_url(config, '/api/v3/stages/invitation/invitations/'),
         headers=get_headers(config),
         json=obj)
-    print(f"{fixed_data['username']}\t{x.status_code}: {x.reason}", file=sys.stderr)
 
     if x.ok:
-        # return invite UUID
+        print(f"{fixed_data['username']}\t{x.status_code}: {x.reason}", file=sys.stderr)
         return x.json().get('pk')
-    return None
+    else:
+        print(f"{fixed_data['username']}\t{x.status_code}: {x.reason} {x.text}", file=sys.stderr)
+        return None
 
 def main():
     config = configparser.ConfigParser()
@@ -53,9 +54,11 @@ def main():
                 "name": m.group(2),
                 "email": m.group(3),
             }
-            invite_uuid = create_invite(config, enroll_data)
-            if invite_uuid:
-                print(f"{line},{invite_uuid}")
+            invite_token = create_invite(config, enroll_data)
+            if invite_token:
+                print(f"{line},{invite_token}")
+        else:
+            print(f"ignoring line: {line}", file=sys.stderr)
 
 if __name__ == '__main__':
     main()
