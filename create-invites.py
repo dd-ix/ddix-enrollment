@@ -22,11 +22,14 @@ def create_invite(config, expire, fixed_data={}):
     parameter should contain `username`, `name` and email fields.
     '''
 
+    name = f"enroll-{fixed_data['username']}"
+    name = re.sub('[^0-9a-zA-Z]+', '-', name)
+
     obj = {
        "expires" : expire,
        "fixed_data" : fixed_data,
        "flow" : config['authentik']['InviteFlow'],
-       "name" : f"enroll-{fixed_data['username']}",
+       "name" : name,
        "single_use" : True,
     }
     x = requests.post(
